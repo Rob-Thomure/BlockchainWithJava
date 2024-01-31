@@ -6,16 +6,21 @@ public class Block {
     private long timeStamp;
     private String previousBlockHash;
     private String blockHash;
+    private int numZeroes;
+    private int hashLength = 64;
+    private int magic;
 
     static {
         idIndex = 1;
     }
 
-    public Block(String previousBlockHash) {
+    public Block(String previousBlockHash, int numZeroes) {
         this.id = idIndex;
         setNextIndex();
         this.timeStamp = new Date().getTime();
         this.previousBlockHash = previousBlockHash;
+        this.numZeroes = numZeroes;
+        this.magic = -1;
         this.blockHash = generateHash();
     }
 
@@ -24,8 +29,14 @@ public class Block {
     }
 
     private String generateHash() {
-        String stringValues = new StringBuilder().append(id).append(timeStamp).append(previousBlockHash).toString();
-        return StringUtil.applySha256(stringValues);
+        String zeroes = "0".repeat(numZeroes) + "[^0].+";
+        String hashString = "";
+        while (!hashString.matches(zeroes)) {
+            magic++;
+            String classString = new StringBuilder().append(id).append(timeStamp).append(previousBlockHash).append(magic).toString();
+            hashString = StringUtil.applySha256(classString);
+        }
+        return hashString;
     }
 
     public String getBlockHash() {
@@ -37,10 +48,11 @@ public class Block {
                 Block:
                 Id: %d
                 Timestamp: %d
+                Magic number: %d
                 Hash of the previous block:
                 %s
                 Hash of the block:
-                %s""".formatted(id, timeStamp, previousBlockHash, blockHash);
+                %s""".formatted(id, timeStamp, magic, previousBlockHash, blockHash);
     }
 
 
