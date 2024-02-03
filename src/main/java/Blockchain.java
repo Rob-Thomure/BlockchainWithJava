@@ -12,6 +12,8 @@ public class Blockchain {
         this.numZeroes = numZeroes;
     }
 
+    // blockchain shouldn't create new blocks. Should keep the chain valid and accept
+    // the new blocks from outside
     public void generateBlock() {
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();

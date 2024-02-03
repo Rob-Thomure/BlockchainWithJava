@@ -2,13 +2,15 @@ import java.util.Date;
 
 public class Block {
     private static int idIndex;
-    private int id;
-    private long timeStamp;
-    private String previousBlockHash;
-    private String blockHash;
     private int numZeroes;
     private int hashLength = 64;
+
+    private String previousBlockHash;
+    private String blockHash;
+    private int id;
+    private long timeStamp;
     private int magic;
+
 
     static {
         idIndex = 1;
