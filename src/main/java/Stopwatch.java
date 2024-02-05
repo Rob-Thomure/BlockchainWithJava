@@ -14,7 +14,8 @@ public class Stopwatch {
     }
 
     public long getDuration() {
-        return Duration.between(start, stop).toSeconds();
+        Instant now = Instant.now();
+        return Duration.between(start, now).toSeconds();
     }
 
 

@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.util.Objects;
 
 public class Block {
     private static int idIndex;
@@ -9,7 +10,8 @@ public class Block {
     private String blockHash;
     private int id;
     private long timeStamp;
-    private int magic;
+    private int magicNumber;
+    private long secondsToGenerate;
 
 
     static {
@@ -22,8 +24,18 @@ public class Block {
         this.timeStamp = new Date().getTime();
         this.previousBlockHash = previousBlockHash;
         this.numZeroes = numZeroes;
-        this.magic = -1;
+        this.magicNumber = -1;
         this.blockHash = generateHash();
+    }
+
+    public Block(int id, long timeStamp, int magicNumber, String previousBlockHash, String blockHash,
+                 long secondsToGenerate) {
+        this.id = id;
+        this.timeStamp = timeStamp;
+        this.magicNumber = magicNumber;
+        this.previousBlockHash = previousBlockHash;
+        this.blockHash = blockHash;
+        this.secondsToGenerate = secondsToGenerate;
     }
 
     private static void setNextIndex() {
@@ -34,8 +46,8 @@ public class Block {
         String zeroes = "0".repeat(numZeroes) + "[^0].+";
         String hashString = "";
         while (!hashString.matches(zeroes)) {
-            magic++;
-            String classString = new StringBuilder().append(id).append(timeStamp).append(previousBlockHash).append(magic).toString();
+            magicNumber++;
+            String classString = new StringBuilder().append(id).append(timeStamp).append(previousBlockHash).append(magicNumber).toString();
             hashString = StringUtil.applySha256(classString);
         }
         return hashString;
@@ -44,6 +56,28 @@ public class Block {
     public String getBlockHash() {
         return this.blockHash;
     }
+
+    public String getPreviousBlockHash() {
+        return this.previousBlockHash;
+    }
+
+    public long getSecondsToGenerate() {
+        return this.secondsToGenerate;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public int getMagicNumber() {
+        return magicNumber;
+    }
+
+
 
     public String toString() {
         return  """
@@ -54,8 +88,19 @@ public class Block {
                 Hash of the previous block:
                 %s
                 Hash of the block:
-                %s""".formatted(id, timeStamp, magic, previousBlockHash, blockHash);
+                %s""".formatted(id, timeStamp, magicNumber, previousBlockHash, blockHash);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Block block = (Block) o;
+        return id == block.id;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
