@@ -43,6 +43,7 @@ public class Blockchain {
     }
 
     public boolean isValidBlock(Block block) {
+        if (blocks.isEmpty()) return true;
         return previousBlockAndPrefixSizeMatches(block);
     }
 
