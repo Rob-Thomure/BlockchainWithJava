@@ -4,16 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Blockchain {
+    private static int nextAvailableBlockId = 1;
     private List<Block> blocks;
-    private List<Long> times;
     private int zeroesPrefixSize;
     private Map<Integer, ZeroesPrefixRecord> prefixRecords;
-
-    public Blockchain(int numZeroes) {
-        this.blocks = new ArrayList<>();
-        this.times = new ArrayList<>();
-        this.zeroesPrefixSize = numZeroes;
-    }
 
     public Blockchain() {
         this.blocks = new ArrayList<>();
@@ -21,21 +15,10 @@ public class Blockchain {
         this.prefixRecords = new HashMap<>();
     }
 
-    public void generateBlock() {
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.start();
-        if (blocks.isEmpty())
-            blocks.add(new Block("0", zeroesPrefixSize));
-        else
-            blocks.add(new Block(getPreviousBlockHash(), zeroesPrefixSize));
-        stopwatch.stop();
-        times.add(stopwatch.getDuration());
-    }
-
     public boolean addBlock(Block block) {
-
         if (blocks.isEmpty() || previousBlockAndPrefixSizeMatches(block)) {
             blocks.add(block);
+            setNextAvailableBlockId();
             adjustZeroesPrefixSize(block);
             return true;
         }
@@ -52,7 +35,6 @@ public class Blockchain {
     }
 
     private boolean previousBlockHashMatches(Block block) {
-
         return block.getPreviousBlockHash().equals(blocks.get(blocks.size() - 1).getBlockHash());
     }
 
@@ -85,16 +67,6 @@ public class Blockchain {
         return true;
     }
 
-    public String getStringFormattedBlockChain() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < blocks.size(); i++) {
-            stringBuilder.append(blocks.get(i)).append("\n")
-                    .append("Block was generating for %d seconds".formatted(times.get(i)))
-                    .append("\n\n");
-        }
-        return stringBuilder.toString();
-    }
-
     public String getPreviousBlockHash() {
         if (blocks.isEmpty())
             return "0";
@@ -106,7 +78,7 @@ public class Blockchain {
         blocks.forEach(block -> {
             System.out.println("""
                     Block:
-                    Created by miner #
+                    Created by miner # %d
                     Id: %d
                     Timestamp: %d
                     Magic number: %d
@@ -116,6 +88,7 @@ public class Blockchain {
                     %s
                     Block was generating for %d seconds
                     %s\n""".formatted(
+                            block.getGeneratedByMiner(),
                             block.getId(),
                     block.getTimeStamp(),
                     block.getMagicNumber(),
@@ -138,13 +111,13 @@ public class Blockchain {
         return adjustment;
     }
 
-    public int getNextBockId() {
-        int blocksLastIndex = blocks.size() - 1;
-        return blocks.get(blocksLastIndex).getId() + 1;
-
+    public static int getNextAvailableBlockId() {
+        return nextAvailableBlockId;
     }
 
-
+    private static void setNextAvailableBlockId() {
+        nextAvailableBlockId += 1;
+    }
 
 
 }

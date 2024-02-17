@@ -12,6 +12,7 @@ public class Block {
     private long timeStamp;
     private int magicNumber;
     private long secondsToGenerate;
+    private int generatedByMiner;
 
 
     static {
@@ -36,6 +37,17 @@ public class Block {
         this.previousBlockHash = previousBlockHash;
         this.blockHash = blockHash;
         this.secondsToGenerate = secondsToGenerate;
+    }
+
+    public Block(int id, long timeStamp, int magicNumber, String previousBlockHash, String blockHash,
+                 long secondsToGenerate, int generatedByMiner) {
+        this.id = id;
+        this.timeStamp = timeStamp;
+        this.magicNumber = magicNumber;
+        this.previousBlockHash = previousBlockHash;
+        this.blockHash = blockHash;
+        this.secondsToGenerate = secondsToGenerate;
+        this.generatedByMiner = generatedByMiner;
     }
 
     private static void setNextIndex() {
@@ -75,6 +87,10 @@ public class Block {
 
     public int getMagicNumber() {
         return magicNumber;
+    }
+
+    public int getGeneratedByMiner() {
+        return generatedByMiner;
     }
 
 
