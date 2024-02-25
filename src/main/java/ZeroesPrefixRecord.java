@@ -1,7 +1,7 @@
 public class ZeroesPrefixRecord {
     enum Adjustment {INCREASED, DECREASED, STAYS}
-    private int prefixSize;
-    private Adjustment adjustment;
+    private final int prefixSize;
+    private final Adjustment adjustment;
 
     public ZeroesPrefixRecord(int prefixSize, Adjustment increased) {
         this.prefixSize = prefixSize;

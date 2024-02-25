@@ -1,43 +1,13 @@
-import java.util.Date;
 import java.util.Objects;
 
 public class Block {
-    private static int idIndex;
-    private int numZeroes;
-    private int hashLength = 64;
-
-    private String previousBlockHash;
-    private String blockHash;
-    private int id;
-    private long timeStamp;
-    private int magicNumber;
-    private long secondsToGenerate;
-    private int generatedByMiner;
-
-
-    static {
-        idIndex = 1;
-    }
-
-    public Block(String previousBlockHash, int numZeroes) {
-        this.id = idIndex;
-        setNextIndex();
-        this.timeStamp = new Date().getTime();
-        this.previousBlockHash = previousBlockHash;
-        this.numZeroes = numZeroes;
-        this.magicNumber = -1;
-        this.blockHash = generateHash();
-    }
-
-    public Block(int id, long timeStamp, int magicNumber, String previousBlockHash, String blockHash,
-                 long secondsToGenerate) {
-        this.id = id;
-        this.timeStamp = timeStamp;
-        this.magicNumber = magicNumber;
-        this.previousBlockHash = previousBlockHash;
-        this.blockHash = blockHash;
-        this.secondsToGenerate = secondsToGenerate;
-    }
+    private final String previousBlockHash;
+    private final String blockHash;
+    private final int id;
+    private final long timeStamp;
+    private final int magicNumber;
+    private final long secondsToGenerate;
+    private final int generatedByMiner;
 
     public Block(int id, long timeStamp, int magicNumber, String previousBlockHash, String blockHash,
                  long secondsToGenerate, int generatedByMiner) {
@@ -48,21 +18,6 @@ public class Block {
         this.blockHash = blockHash;
         this.secondsToGenerate = secondsToGenerate;
         this.generatedByMiner = generatedByMiner;
-    }
-
-    private static void setNextIndex() {
-        idIndex++;
-    }
-
-    private String generateHash() {
-        String zeroes = "0".repeat(numZeroes) + "[^0].+";
-        String hashString = "";
-        while (!hashString.matches(zeroes)) {
-            magicNumber++;
-            String classString = new StringBuilder().append(id).append(timeStamp).append(previousBlockHash).append(magicNumber).toString();
-            hashString = StringUtil.applySha256(classString);
-        }
-        return hashString;
     }
 
     public String getBlockHash() {
@@ -92,8 +47,6 @@ public class Block {
     public int getGeneratedByMiner() {
         return generatedByMiner;
     }
-
-
 
     public String toString() {
         return  """

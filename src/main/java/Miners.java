@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public class Miners {
-    private Blockchain blockchain;
+    private final Blockchain blockchain;
     private List<Callable<Miner>> callableMiners;
 
     public Miners(Blockchain blockchain) {
@@ -11,8 +11,7 @@ public class Miners {
         this.callableMiners = new ArrayList<>();
 
         List<Miner> miners = makeMiners(blockchain);
-        List<Callable<Miner>> callableMiners = makeCallableMiners(miners);
-        this.callableMiners = callableMiners;
+        this.callableMiners = makeCallableMiners(miners);
     }
 
     private List<Miner> makeMiners(Blockchain blockchain) {
@@ -27,7 +26,7 @@ public class Miners {
     private List<Callable<Miner>> makeCallableMiners(List<Miner> miners) {
         List<Callable<Miner>> callableMiners = new ArrayList<>();
         miners.forEach(miner -> {
-            Callable<Miner> callableMiner = () -> miner.mine();
+            Callable<Miner> callableMiner = miner::mine;
             callableMiners.add(callableMiner);
         });
         return callableMiners;
@@ -38,9 +37,7 @@ public class Miners {
         try {
             Miner result = executorService.invokeAny(callableMiners);
             blockchain.addBlock(result.getBlock());
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
         executorService.shutdown();

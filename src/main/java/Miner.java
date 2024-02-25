@@ -1,17 +1,13 @@
 import java.util.Date;
 
 public class Miner {
-    int minerNumber;
-    Blockchain blockchain;
-    Block block;
+    private final int minerNumber;
+    private final Blockchain blockchain;
+    private Block block;
 
     public Miner(int minerNumber, Blockchain blockchain) {
         this.minerNumber = minerNumber;
         this.blockchain = blockchain;
-    }
-
-    public int getMinerNumber() {
-        return minerNumber;
     }
 
     public Block getBlock() {
@@ -26,11 +22,9 @@ public class Miner {
         int magicNumber = 0;
         block = null;
         while (!validBlock) {
-            String blockString = new StringBuilder(blockId)
-                    .append(new Date().getTime())
-                    .append(blockchain.getPreviousBlockHash())
-                    .append(magicNumber)
-                    .toString();
+            String blockString = new Date().getTime() +
+                    blockchain.getPreviousBlockHash() +
+                    magicNumber;
             String hash = StringUtil.applySha256(blockString);
             block = new Block(blockId, new Date().getTime(), magicNumber, blockchain.getPreviousBlockHash(),
                     hash, stopwatch.getDuration(), minerNumber);
